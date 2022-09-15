@@ -1,0 +1,31 @@
+{
+    "Serilog": {
+        "Using": [
+            "Serilog.Exceptions",
+            "Serilog",
+            "Serilog.Sinks.Console",
+            "Serilog.Sinks.Debug",
+            "Serilog.Enrichers.Context",
+            "Serilog.Enrichers.Thread",
+            "Serilog.Settings.Configuration",
+            "Serilog.AspNetCore"
+        ],
+        "MinimumLevel": {
+            "Default": "Verbose",
+            "Override": {
+                "System": "Information",
+                "Microsoft": "Information",
+                "Microsoft.EntityFrameworkCore": "Information"
+            }
+        },
+        "WriteTo": [
+            {
+                "Name": "Console",
+                "Args": {
+                    "restrictedToMinimumLevel": "Verbose",
+                    "outputTemplate": "{Timestamp: yyyy-MM-dd HH:mm:ss.fff zzz} | [{Level:u3}] {Message:lj} <{ThreadId}>{NewLine}{Exception}"
+                }
+            }
+        ]
+    }
+}
