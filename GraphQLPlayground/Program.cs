@@ -15,7 +15,6 @@ builder.Configuration
     .AddJsonFile("loggingConfig.json", optional: false, reloadOnChange: false);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
 var connectionString = builder.Configuration.GetConnectionString("DbConnection");
@@ -34,12 +33,10 @@ builder.Services
             });
     });
 
+// Add Health Checks
 builder.Services
     .AddHealthChecks()
-    .AddCheck("HealthyCheck", () => HealthCheckResult.Healthy());
-
-builder.Services
-    .AddHealthChecks()
+    .AddCheck("HealthyCheck", () => HealthCheckResult.Healthy())
     .AddSqlServer(connectionString);
 
 builder.Services
@@ -49,8 +46,11 @@ builder.Services
     })
     .AddSqlServerStorage(connectionString);
 
+// Add GraphQL Services
 builder.Services
     .AddGraphQLServer()
+    .InitializeOnStartup()
+    .RegisterDbContext<AdventureWorksContext>(DbContextKind.Pooled)
     .AddQueryType(q => q.Name("Query"))
     .AddType<GraphQLWeather>()
     .AddType<AdventureWorks>()
@@ -58,6 +58,7 @@ builder.Services
     .AddFiltering()
     .AddSorting();
 
+// Add Logging
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 var app = builder.Build();
@@ -90,4 +91,11 @@ app.UseEndpoints(endpoints =>
     endpoints.MapGraphQL();
 });
 
-app.Run();
+try
+{
+    await app.RunAsync();
+}
+finally
+{
+    await Log.CloseAndFlushAsync();
+}
