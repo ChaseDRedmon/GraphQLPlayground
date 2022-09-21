@@ -7,5 +7,5 @@ public class AdventureWorks
 {
     // Attributes must be in this order
     [UseProjection, UseSorting, UseFiltering]
-    public IQueryable<Customer> GetCustomers([Service] AdventureWorksContext context) => context.Customers;
+    public IQueryable<Customer> GetCustomers(AdventureWorksContext context) => context.Customers;
 }

@@ -11,12 +11,7 @@
             "Serilog.AspNetCore"
         ],
         "MinimumLevel": {
-            "Default": "Verbose",
-            "Override": {
-                "System": "Information",
-                "Microsoft": "Information",
-                "Microsoft.EntityFrameworkCore": "Information"
-            }
+            "Default": "Verbose"
         },
         "WriteTo": [
             {

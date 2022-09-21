@@ -34,7 +34,7 @@ builder.Services
     });
 
 // Add Health Checks
-builder.Services
+/*builder.Services
     .AddHealthChecks()
     .AddCheck("HealthyCheck", () => HealthCheckResult.Healthy())
     .AddSqlServer(connectionString);
@@ -44,19 +44,23 @@ builder.Services
     {
         s.AddHealthCheckEndpoint("endpoint1", "/health");
     })
-    .AddSqlServerStorage(connectionString);
+    .AddSqlServerStorage(connectionString);*/
 
 // Add GraphQL Services
 builder.Services
+    .AddMemoryCache()
+    .AddMD5DocumentHashProvider()
     .AddGraphQLServer()
     .InitializeOnStartup()
     .RegisterDbContext<AdventureWorksContext>(DbContextKind.Pooled)
+    .UseAutomaticPersistedQueryPipeline()
+    .AddInMemoryQueryStorage()
     .AddQueryType(q => q.Name("Query"))
     .AddType<GraphQLWeather>()
     .AddType<AdventureWorks>()
     .AddProjections()
-    .AddFiltering()
-    .AddSorting();
+    .AddSorting()
+    .AddFiltering();
 
 // Add Logging
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
@@ -79,13 +83,13 @@ app.MapControllers();
 app.UseRouting();
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapHealthChecks("/health", new HealthCheckOptions
+    /*endpoints.MapHealthChecks("/health", new HealthCheckOptions
     {
         Predicate = _ => true,
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
 
-    endpoints.MapHealthChecksUI();
+    endpoints.MapHealthChecksUI();*/
     
     endpoints.MapBananaCakePop();
     endpoints.MapGraphQL();
